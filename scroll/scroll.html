@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1</title>
+  <link rel="stylesheet" href="css//bootstrap.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+    .content {
+      height: 300px;
+      overflow: auto;
+    }
+  </style>
+  <script src="js/vue.js"></script>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="sample">
+      <form v-if="!submitForm" @submit.prevent="submitForm=true">
+        <div class="content alert alert-info" @scroll="onScroll($event)">
+          <p v-for="item in 20">This text no one reads. This text no one reads. This text no one reads.</p>
+        </div>
+        <template v-if="scrolled">
+          <div class="form-check" v-for="(item, index) in checkBox" :key="index">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" v-model="item.value" true-value="yes" false-value="no">
+              {{ item.label}}
+
+            </label>
+          </div>
+          <template v-if="checkBox[1].value==='yes'">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" value="phone" v-model="variant">
+                На телефон
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" value="email" v-model="variant">
+                На email
+              </label>
+            </div>
+          </template>
+
+          <hr>
+          <button class="btn btn-primary" :disabled="checkBox[0].value==='no'">
+            Send Data
+          </button>
+        </template>
+      </form>
+      <template v-else>
+        <table class="table table-bordered">
+          <tr v-for="(item, index) in checkBox" :key="index">
+            <td>{{ item.label}}</td>
+            <td>{{ item.value}}</td>
+          </tr>
+          <tr>
+            <td>Отправить спам на:</td>
+            <td>{{ variant}}</td>
+          </tr>
+
+
+        </table>
+      </template>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: '.sample',
+      data: {
+        scrolled: false,
+        submitForm: false,
+        checkBox: [{
+            label: 'Это полный бред',
+            value: 'no'
+          },
+          {
+            label: 'Хочу получать спам',
+            value: 'no'
+          }
+        ],
+
+        variant: ''
+      },
+      methods: {
+        onScroll(e) {
+          if (e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop < 10) {
+            this.scrolled = true;
+          }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
