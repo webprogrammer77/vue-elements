@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/vue.js"></script>
+</head>
+
+<body>
+  <div class="sample" :style="fontsize">
+    <div v-timer:1000.5="onTimer" :style="fontsize">1</div>
+    <div v-timer:1000.5.run="onTimer" :style="fontsize">2</div>
+    <div v-timer:1000="onTimer" :style="fontsize">3</div>
+  </div>
+  <script>
+    Vue.directive('timer', {
+      bind(el, options) {
+        let count = 15;
+        let timeout;
+        let timer;
+        let end = 0;
+
+        if (!isNaN(+options.arg)) {
+          timeout = parseInt(options.arg);
+        }
+
+        for (let name in options.modifiers) {
+          if (!isNaN(+name)) {
+            count = parseInt(name);
+          }
+          if (name === 'run') {
+            timeout = 0;
+          }
+        }
+
+        timer = setInterval(() => {
+
+          options.value.call(this, el);
+          end++;
+          if (end === count) {
+            clearInterval(timer);
+          }
+
+        }, timeout);
+
+      }
+    });
+    new Vue({
+      el: '.sample',
+      data: {
+        fontSize: 50
+      },
+      computed: {
+        fontsize() {
+          return {
+            fontSize: this.fontSize + 'px'
+          }
+        }
+      },
+
+      methods: {
+        onTimer(e) {
+          let font_size = +e.style.fontSize.replace('px', '');
+          e.style.fontSize = font_size + 5 + 'px';
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>
